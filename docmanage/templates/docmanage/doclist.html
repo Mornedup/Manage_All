@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <a href="{% url 'upload_doc' %}">Upload a new doc</a>
+    <p>Please have your picture or file ready</p>
+  </div>
+  <div>
+    <h2>Doc list</h2>
+    {% for item in docs %}
+      <a href='{{ item.file.url }}' target="_blank">link</a><br>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    {% if user.is_authenticated %}
+      <div>
+        <h4>Finance management</h4>
+        <div>
+          <a href = "{% url 'doc_list' %}">Manage Docs</a>
+          <div>
+            <p>Manage see uploaded docs and uplaod new docs</p>
+          </div>
+        </div>
+        <div>
+          <a href = "{% url 'claims_list' %}">Manage Claims</a>
+          <div>
+            <p>Manage see uplaoded claims and submit new claims</a>
+          </div>
+        </div>
+        <div>
+          <a href = "">Manage self</a><br>
+          <div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div>
+        <h3>Please log in or create an account</h3>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <a href="{% url 'upload_claim' %}">Submit new claim</a>
+    <p>Please have your Docs ref ready or uplaod a new doc first</p>
+  </div>
+  <div>
+    <h2>Claims list</h2>
+    {% for item in claims %}
+      <a href='{{ item }}' target="_blank">link</a><br>
+    {% endfor %}
+  </div>
+{% endblock %}
