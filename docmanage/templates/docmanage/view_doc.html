@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <a href="{% url 'upload_doc' %}" class="btn btn-default" role="button">Submit new doc</a>
+    <p>Please have your Docs ref ready or uplaod a new doc first</p>
+  </div>
+  <div>
+    <h2>Docref: {{ doc.docref }}</h2>
+    {% for claim in claims %}
+      <p>{{ claim.pk }}</p>
+      <p>{{ claim.ammount }}</p>
+      <a href="{% url 'view_claim' pk=claim.pk %}" class="btn btn-info" role="button">More Info</a><br>
+    {% endfor %}
+  </div>
+{% endblock %}

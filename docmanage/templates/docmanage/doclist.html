@@ -2,10 +2,10 @@
 
 {% block content %}
   <div>
-    <a href="{% url 'upload_doc' %}">Upload a new doc</a>
+    <a href="{% url 'upload_doc' %}" class="btn btn-default" role="button">Upload a new doc</a>
     <p>Please have your picture or file ready</p>
 
-    <a href="{% url 'upload_claim' %}">Submit new claim</a>
+    <a href="{% url 'upload_claim' %}" class="btn btn-default" role="button">Submit new claim</a>
     <p>Please have your Docs ref ready or uplaod a new doc first</p>
   </div>
   <div>
@@ -13,8 +13,7 @@
     {% for item in docs %}
       <div>
         <p>Docref:{{ item.docref }}</p>
-        <a href="">More info</a>
-        <a href='{{ item.file.url }}' target="_blank">View Doc</a><br>
+        <a href="{% url 'view_doc' pk=item.pk %}" class="btn btn-info" role="button">More info</a><br>
       </div>
     {% endfor %}
   </div>

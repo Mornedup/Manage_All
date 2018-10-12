@@ -1,30 +1,53 @@
 {% load staticfiles %}
 
 <html>
-  <head>
+<head>
     <title>Room Mate Management</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <!--<link rel="stylesheet" href="{% static 'css/base.css' %}">-->
-  </head>
-  <body background:url(static\content\pictures\homepage.jpg)>
-    <div>
-      <div>
-        <a href="{% url 'homepage' %}">Home</a>
-        {% if user.is_authenticated %}
-          <a href="{% url 'logout' %}">Logout</a>
-          <a href="{% url 'view_profile' %}">Profile</a>
-        {% else %}
-          <a href="{% url 'login' %} ">Login</a>
-          <a href="{% url 'register' %}">Register</a>
-        {% endif %}
-      </div>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar ">
+        <div class="container-fluid">
+            <!--<div class="navbar-header">-->
+            <!--<a class="navbar-brand" href="/">My WebSite</a>-->
+            <!--</div>-->
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                <li><a href="{% url 'view_profile' %}">Profile</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %} ">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div class="jumbotron">
+        <h1>Roommate manager</h1>
     </div>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li
+        {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <div>
-      <div>
-        {% block content %}
-        {% endblock %}
-      </div>
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
-  </body>
+</div>
+
+
+</body>
 </html>
+

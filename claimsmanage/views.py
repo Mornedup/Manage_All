@@ -26,7 +26,7 @@ def makeclaim(request):
         return render(request, 'claimsmanage/makeclaim.html', {'claimform': claimform, 'users':CUser.objects.all()})
 
 @login_required
-def view_claims(request):
+def view_claimslist(request):
     return render(request, 'claimsmanage/list_claims.html', {'claims': Claim.objects.filter(owner=request.user)})
 
 @login_required
@@ -34,17 +34,3 @@ def view_claim(request, pk):
     claim = get_object_or_404(Claim, pk=pk)
     users = UserClaimAllocate.objects.filter(claim=claim)
     return render(request, 'claimsmanage/view_claim.html', {'claim': claim, 'users':users})
-
-"""@login_required
-
-
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = PostForm()
-    return render(request, 'blog/post_edit.html', {'form': form, 'BaseTemplate': BlogConfig.BaseTemplate})"""
