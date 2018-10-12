@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from docmanage.models import Doc
+from authapp.models import CUser
 
 # Create your models here.
 class Claim(models.Model):
@@ -10,9 +11,8 @@ class Claim(models.Model):
     ammount = models.DecimalField(decimal_places=2, max_digits=10)
     notes = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
-    alocate_to = models.CharField(max_length=19)
     docref = models.ForeignKey(Doc, on_delete=models.CASCADE)
     alocated = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{}'.format(self.identifier)
+        return self.pk
