@@ -4,7 +4,10 @@
     <h2>Submit new claim</h2>
     <form method="POST">
       {% csrf_token %}
-      <a>{{ form.as_p }}</a>
+      <a>{{ claimform.as_p }}</a>
+      {%for user in users%}
+      <label><input type="checkbox" name="checkbox" value={{user.pk}}>{{user}}</label>
+      {% endfor %}
       <button type="submit">Submit</button>
     </form>
 {% endblock %}

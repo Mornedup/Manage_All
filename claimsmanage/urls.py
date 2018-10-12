@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     url(r'^uploadclaim/$', views.makeclaim, name='upload_claim'),
-    url(r'^listclaims/$', views.view_claim, name='claims_list'),
+    url(r'^listclaims/$', views.view_claims, name='claims_list'),
+    url(r'^(?P<pk>\d+)/$', views.view_claim, name='view_claim'),
 ]

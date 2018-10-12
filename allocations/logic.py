@@ -1,39 +1,67 @@
 from django.utils import timezone
-from .models import Allocation
-from .forms import AllocationForm
+from .models import UserClaimAllocate
+from authapp.models import CUser
+from docmanage.models import Doc
+from claimsmanage.models import Claim
 
-def GetDefaultStartDate():
-    sd = timezone.now
-    if sd.month=1:
-        sd.replace(year=sd.year-1, month=12, day=26)
+#offset will be the ammount of months back you want to move your range
+def GetDefaultDateRange(offset=0):
+    startdate = timezone.now()
+    startdate.replace(month=startdate.month+offset)
+    if startdate.month==1:
+        startdate.replace(year=startdate.year-1, month=12, day=26)
     else:
-        sd.replace(month=sd.month-1, day=26)
+        startdate.replace(month=startdate.month-1, day=26)
 
-def share_calc(sharepartners, total):
-    return total/(count sharepartners)
+    enddate= timezone.now()
+    if enddate.month==1:
+        enddate.replace(year=enddate.year-1, month=12, day=26)
+    else:
+        enddate.replace(day=25)
 
-def allocate(user, description, startdate, enddate):
-    claimlist = get all from claims database that contains "user"
-    claimlist = []
-    total=0
-    for claim in claimlist
-        if claim.owner == claim.docref_id.owner
-        total += share_calc(claim.alocate_to, claim.ammount)
-        claim_list.append(claim.identifier)
+    return ({'start_date':startdate.date(), 'end_date':enddate.date()})
 
-    form = AllocationForm(request.POST)
-    if form.is_valid():
-        post = form.save(commit=False)
-        post.author = request.user
-        post.published_date = timezone.now()
-        post.save()
+def CalcOwedToUser(user, daterange):
+    docs = Doc.objects.filter(owner=user, created_date__range=[daterange.get('start_date'), daterange.get('end_date')])
+    totals={}
+    for doc in docs:
+        claims = Claim.objects.filter(docref=doc)
+        for claim in claims:
+            for share in UserClaimAllocate.objects.filter(claim=claim):
+                if share.user != user:
+                    if share.user in totals:
+                        totals[share.user]+=share.share_ammount
+                    else:
+                        totals[share.user]=share.share_ammount
+    print(totals)
+    return (totals)
 
+def CalcOwedByUser(user, daterange):
+    toshare=UserClaimAllocate.objects.filter(user=user, created_date__range=[daterange.get('start_date'), daterange.get('end_date')])
+    totals={}
+    for share in toshare:
+        if user != share.claim.docref.owner:
+            if share.claim.docref.owner in totals:
+                totals[share.claim.docref.owner]+=share.share_ammount
+            else:
+                totals[share.claim.docref.owner]=share.share_ammount
+    return (totals)
 
+def CalcFinalout(owedbyuser, owedtouser):
+    finalout={}
+    for user in owedbyuser:
+        if user in owedtouser:
+            result=owedtouser[user]-owedbyuser[user]
+        else:
+            result=owedbyuser[user]*(-1)
+        finalout[user]=result
 
-    return render(request, 'blog/post_edit.html', {'form': form, 'BaseTemplate': BlogConfig.BaseTemplate})
-    created entry in allocation database
-        set the user =owner
-        set description
-        set start and end dates
-        set total_ammount
-        set list of claims in claim_list
+    for user in owedtouser:
+        if user not in finalout:
+            finalout[user]=owedtouser[user]
+
+    return(finalout)
+
+def CompileReport(user, owedbyuser, owedtouser, finalout):
+    pass
+    return ({'owedbyuser':owedbyuser, 'owedtouser':owedtouser, 'finalout':finalout})

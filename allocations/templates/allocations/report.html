@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ type }}</h2>
+    <h3> Details </h3>
+    <h4> Owed by you for month </h4>
+    {% for key, value in reportdata.owedbyuser.items %}
+        <p> {{ key }}: R{{ value }}  </p>
+    {% endfor %}
+    <h4> Owed to you for month </h4>
+    {% for key, value in reportdata.owedtouser.items %}
+        <p> {{ key }}: R{{ value }}  </p>
+    {% endfor %}
+    <h4> In conclusion </h4>
+    {% for key, value in reportdata.finalout.items %}
+        <p> {{ key }}: R{{ value }}  </p>
+    {% endfor %}
+{% endblock %}

@@ -6,6 +6,8 @@ class DocUploadForm(forms.ModelForm):
     class Meta:
         model = Doc
         fields = (
+        'docref',
+        'purchasedate',
         'notes',
         'file',
         )

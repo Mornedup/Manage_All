@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'claimsmanage',
     'homeapp',
     'authapp',
+    'allocations'
 ]
 
 MIDDLEWARE = [
@@ -84,6 +85,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL='authapp.CUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
