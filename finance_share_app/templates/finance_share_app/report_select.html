@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Report</h2>
+    <h3>Request last month report</h3>
+    <p>This is for the past complete month</p>
+    <a href="{% url 'last_month_report' %}" class="btn btn-info" role="button">Request report</a>
+    <h3>Request custom report</h3>
+    <form method="POST">
+      {% csrf_token %}
+      Start date:
+      <input type="date" name="start_date">
+      End date:
+      <input type="date" name="end_date"><br>
+      <button type="submit" class="btn btn-info" >Request custom report</button>
+    </form>
+    <h3>Request current month report</h3>
+    <p>This will be for month up to where it is now</p>
+    <a href="{% url 'current_month_report' %}" class="btn btn-info" role="button">Request provisional report</a>
+{% endblock %}

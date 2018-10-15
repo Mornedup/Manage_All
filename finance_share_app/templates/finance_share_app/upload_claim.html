@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Submit new claim</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <a>{{ claimform.as_p }}</a>
+      {%for user in users%}
+      <label><input type="checkbox" name="checkbox" value={{user.pk}}>{{user}}</label>
+      {% endfor %}
+        <br>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

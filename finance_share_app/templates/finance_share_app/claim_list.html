@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <a href="{% url 'upload_claim' %}" class="btn btn-default" role="button">Submit new claim</a>
+    <p>Please have your Docs ref ready or uplaod a new doc first</p>
+
+    <a href="{% url 'upload_document' %}" class="btn btn-default" role="button">Upload a new doc</a>
+    <p>Please have your picture or file ready</p>
+  </div>
+  <div>
+    <h2>Claims list</h2>
+    {% for item in claims %}
+      <p>{{ item.pk }}</p>
+      <p>{{ item.ammount }}</p>
+      <a href="{% url 'view_claim' pk=item.pk %}" class="btn btn-info" role="button">More Info</a><br>
+    {% endfor %}
+  </div>
+{% endblock %}
