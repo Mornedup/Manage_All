@@ -5,7 +5,7 @@ services:
     image: postgres
   web:
     build: .
-    command: gunicorn manage_all.wsgi:application --bind 0.0.0.0:8001 --workers 3
+    command: gunicorn manage_all:application --bind 0.0.0.0:8001 --workers 3
     volumes:
       - .:/code
     ports:
