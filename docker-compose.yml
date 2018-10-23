@@ -10,7 +10,7 @@ services:
     volumes: 
       - .:/source
   db: 
-    image: "POSTGRES:10.1-ALPINE"
+    image: "POSTGRES"
     volumes:
       - "POSTGRES_DATA:/mnt/db-volume1/LIB/POSTGRESQL/DATA/MANAGE_ALL/"
     ports: 
