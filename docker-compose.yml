@@ -1,8 +1,8 @@
 --- 
-SERVICES: 
-  WEB: 
-    BUILD: "."
-    COMMAND: "PYTHON gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+services:
+  web:
+    build: "."
+    command: "PYTHON gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     depends_on: 
       - db
     ports: 
@@ -10,8 +10,8 @@ SERVICES:
     volumes: 
       postgres_data: ~
   db: 
-    IMAGE: "POSTGRES:10.1-ALPINE"
-    VOLUMES: 
+    image: "POSTGRES:10.1-ALPINE"
+    volumes:
       - "POSTGRES_DATA:/mnt/db-volume1/LIB/POSTGRESQL/DATA/MANAGE_ALL/"
     ports: 
       - "5432:5432"
