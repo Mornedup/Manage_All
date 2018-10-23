@@ -1,14 +1,14 @@
 --- 
 services:
   web:
-    build: "."
-    command: "PYTHON gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8001 --workers 3"
+    build: .
+    command: "gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8001 --workers 3"
     depends_on: 
       - db
     ports: 
       - "8001:80"
     volumes: 
-      - .:/source
+      - .:/code
   db: 
     image: "postgres"
     volumes:

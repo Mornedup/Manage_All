@@ -2,11 +2,11 @@
 FROM python:3.6
 # File Author / Maintainer
 MAINTAINER Morne
-RUN mkdir /source
+RUN mkdir /code
 #set directoty where CMD will execute
-WORKDIR /source
+WORKDIR /code
 #add project files to the usr/src/app folder
-ADD . /source
+ADD . /code/
 # Get pip to download and install requirements:
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
