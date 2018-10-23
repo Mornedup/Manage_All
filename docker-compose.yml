@@ -1,20 +1,20 @@
 version: '3.6'
-SERVICES:  
-	db:    
-		IMAGE: POSTGRES:10.1-ALPINE    
-		VOLUMES:      
+SERVICES:
+	db:
+		IMAGE: POSTGRES:10.1-ALPINE
+		VOLUMES:
 			- POSTGRES_DATA:/mnt/db-volume1/LIB/POSTGRESQL/DATA/MANAGE_ALL/  
 		ports:
 			- "5432:5432"
-	WEB:    
-		BUILD: .    
+	WEB:
+		BUILD: .
 		COMMAND: PYTHON gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8000 --workers 3
-		volumes:      
-			- .:/source/Manage_All    
-		ports:      
-			- 8000:80       
-		depends_on:      
+		volumes:
+			- .:/source/Manage_All
+		ports:
+			- 8000:80
+		depends_on:
 			- db
 
-	volumes:  
+	volumes:
 		postgres_data:
