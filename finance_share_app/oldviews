@@ -1,0 +1,45 @@
+
+# @login_required
+# def make_claim(request):
+#     if request.method == 'POST':
+#         claimForm = ClaimUploadForm(request.POST)
+#         if claimForm.is_valid():
+#             claim = claimForm.save(commit=False)
+#             claim.owner = request.user
+#             claim.created_date = timezone.now()
+#             claim.save()
+#             for user in CUser.objects.filter(pk__in=request.POST.getlist('checkbox')):
+#                 UserClaimAllocate.objects.create(user=user, claim=claim)
+#             count = UserClaimAllocate.objects.filter(claim=claim).count()
+#             UserClaimAllocate.objects.filter(claim=claim).update(share_amount=claim.amount / (count))
+#             return redirect('claim_list')
+#     else:
+#         claimform = ClaimUploadForm()
+#
+#     return render(request, 'finance_share_app/upload_claim.html', {'claimform': claimform, 'users': CUser.objects.all()})
+
+# @login_required
+# def view_document(request, pk):
+#     doc = get_object_or_404(Document, pk=pk)
+#     claims = Claim.objects.filter(docref=doc)
+#     return render(request, 'finance_share_app/view_document.html', {'doc': doc, 'claims': claims})
+
+
+# @login_required
+# def view_claim_list(request):
+#     return render(request, 'finance_share_app/claim_list.html',
+#                   {'claims': Claim.objects.filter(docref__owner=request.user)})
+
+
+# @login_required
+# def upload_document(request):
+#     if request.method == 'POST':
+#         if request.FILES['file']:
+#             currentdoc = Document(docref=request.POST['docref'], file=request.FILES['file'], owner=request.user,
+#                                   notes=request.POST['notes'], created_date=timezone.now())
+#             currentdoc.save()
+#             return redirect('document_list')
+#     else:
+#         form = DocUploadForm()
+#
+#     return render(request, 'finance_share_app/upload_document.html', {'form': form})

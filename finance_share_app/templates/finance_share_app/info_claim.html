@@ -1,0 +1,23 @@
+{% extends 'finance_share_app/finance_share_home.html' %}
+
+{% block subcontent %}
+<h2>Document:</h2>
+<div>
+    <h3>Claim: {{ claim.pk }}</h3>
+    <p>Claim description: {{ claim.description }}</p>
+    <p>Claim amount: {{ claim.amount }}</p>
+    <p>Claim notes: {{ claim.notes }}</p>
+    <p>Docref: {{ claim.docref }}</p>
+    <a href="{{ claim.docref.file.url }}">View Document</a><br><br>
+    <div>
+        <h4>Users:</h4>
+        {% for claim in users %}
+        <p>{{ claim.user.get_full_name }}</p>
+        <p>R{{ claim.share }}</p>
+        {% endfor %}
+    </div>
+    <p>{{ users }}</p>
+    <a href="" class="btn btn-default" role="button">Edit Claim</a><br>
+</div>
+
+{% endblock %}

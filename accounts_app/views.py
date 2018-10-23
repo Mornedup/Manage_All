@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from auth_app.forms import RegistrationForm, UserEditForm, ProfileImgForm
+from accounts_app.forms import RegistrationForm, UserEditForm, ProfileImgForm
 from .models import CUser
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth import update_session_auth_hash, login, logout
@@ -11,10 +11,10 @@ def login_view(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect('homepage')
+            return redirect('finance_share_home')
     else:
         form = AuthenticationForm(request)
-    return render(request, 'auth_app/login.html', {'form': form})
+    return render(request, 'accounts_app/login.html', {'form': form})
 
 @login_required
 def logout_view(request):
@@ -30,7 +30,7 @@ def register(request):
             return redirect('homepage')
     else:
         form = RegistrationForm()
-    return render(request, 'auth_app/register.html', {'form': form})
+    return render(request, 'accounts_app/register.html', {'form': form})
 
 @login_required
 def view_profile(request):
@@ -42,7 +42,7 @@ def view_profile(request):
 
     PrflImgForm = ProfileImgForm(instance=request.user)
     args = {'user': request.user, 'PrflImgForm': PrflImgForm}
-    return render(request, 'auth_app/profile.html', args)
+    return render(request, 'accounts_app/profile.html', args)
 
 @login_required
 def edit_profile(request):
@@ -56,7 +56,7 @@ def edit_profile(request):
         Userform = UserEditForm(instance=request.user)
         args = {'Userform': Userform}
 
-    return render(request, 'auth_app/edit_profile.html', args)
+    return render(request, 'accounts_app/edit_profile.html', args)
 
 @login_required
 def change_password(request):
@@ -71,4 +71,4 @@ def change_password(request):
         form = PasswordChangeForm(user=request.user)
 
     args = {'form': form}
-    return render(request, 'auth_app/change_password.html', args)
+    return render(request, 'accounts_app/change_password.html', args)

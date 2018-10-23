@@ -1,5 +1,5 @@
 from django.db import models
-from auth_app.models import CUser
+from accounts_app.models import CUser
 
 # Create your models here.
 class UserApp(models.Model):

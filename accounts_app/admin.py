@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from auth_app.models import CUser
+from accounts_app.models import CUser
 
 
 class UserCreationForm(forms.ModelForm):
