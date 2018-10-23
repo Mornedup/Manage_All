@@ -1,20 +1,24 @@
---- 
+version: '2'
 services:
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/mnt/db-volume1/lib/postgresql/data/manage_all/
+    ports:
+       - "5432:5432"
   web:
     build: .
-    command: "gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8001 --workers 3"
-    depends_on: 
+    command: "sh run_web.sh"
+    ports:
+      - "8030:8000"
+#    environment:
+#      - DB_TYPE=postgresql_
+    networks:
+      - default
+    links:
       - db
-    ports: 
-      - "8001:80"
-    volumes: 
-      - .:/code
-  db: 
-    image: "postgres"
     volumes:
-      - "POSTGRES_DATA:/mnt/db-volume1/LIB/POSTGRESQL/DATA/MANAGE_ALL/"
-    ports: 
-      - "5432:5432"
-version: "3.6"
+      - .:/code
+
 volumes:
-  POSTGRES_DATA:
+  postgres_data:
