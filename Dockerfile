@@ -1,12 +1,11 @@
-# set the base image
 FROM python:3.6
-# File Author / Maintainer
-MAINTAINER Morne
 RUN mkdir /code
-#set directoty where CMD will execute
+# Set Maintainer (as a label, MAINTAINER has been deprecated)
+LABEL maintainer = "Morne"
+# set working directory to /app/
 WORKDIR /code
-#add project files to the usr/src/app folder
+# install python dependencies
+RUN pip install -U pip setuptools
+RUN pip install -U pip wheel setuptools
+RUN pip install -r requirements.txt
 ADD . /code/
-# Get pip to download and install requirements:
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
