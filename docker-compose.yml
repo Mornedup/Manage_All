@@ -1,29 +1,14 @@
----
+version: '3'
 
 services:
   db:
     image: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - "postgres-db-volume:/mnt/db-volume1/lib/postgresql/data/manage_all/"
-
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     command: gunicorn manage_all.wsgi:application --bind 0.0.0.0:8001 --workers 3
     volumes:
       - .:/code
     ports:
       - "8001:80"
-    networks:
-      - default
-    links:
+    depends_on:
       - db
-
-volumes:
-  postgres-db-volume-ms:
-
-networks:
-  default:
