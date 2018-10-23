@@ -1,0 +1,19 @@
+{% extends 'finance_share_app/finance_share_home.html' %}
+
+{% block subcontent %}
+  <div>
+    <a href="{% url 'upload_new_claim' %}" class="btn btn-default" role="button">Submit new claim</a>
+    <p>Please have your Docs ref ready or uplaod a new doc first</p>
+
+
+  </div>
+  <div>
+    <h2>Doc list</h2>
+    {% for item in docs %}
+      <div>
+        <p>Docref:{{ item.docref }}</p>
+        <a href="{% url 'view_claim' document_pk=item.pk %}" class="btn btn-info" role="button">More info</a><br>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

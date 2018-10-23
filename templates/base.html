@@ -11,34 +11,37 @@
 </head>
 <body>
 <div class="container">
-    <nav class="navbar ">
+    <nav class="navbar">
         <div class="container-fluid">
-            <!--<div class="navbar-header">-->
-            <!--<a class="navbar-brand" href="/">My WebSite</a>-->
-            <!--</div>-->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">ManageAll</a>
+            </div>
             <ul class="nav navbar-nav">
-                <li><a href="{% url 'finance_share_home' %}">Home</a></li>
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="{% url 'finance_share_home' %}">Finance share app</a></li>
+            </ul>
+            <a class="btn btn-danger navbar-btn" href="https://github.com/Mornedup/Manage_All/issues/new" role="button"
+               target="blank">Raise issues</a>
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-                <li><a href="{% url 'view_profile' %}">Profile</a></li>
+                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"> Logout </a></li>
+                <li><a href="{% url 'view_profile' %}"><span class="glyphicon glyphicon-user"> Profile </a></li>
                 {% else %}
-                <li><a href="{% url 'login' %} ">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
+                <li><a href="{% url 'register' %} "><span class="glyphicon glyphicon-user"></span> Register </a></li>
+                <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
                 {% endif %}
             </ul>
         </div>
     </nav>
-    <div class="jumbotron">
-        <h1>Roommate manager</h1>
-    </div>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li
-        {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <!--{% if messages %}-->
+    <!--<ul class="messages">-->
+        <!--{% for message in messages %}-->
+        <!--<li-->
+                <!--{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}-->
+        <!--</li>-->
+        <!--{% endfor %}-->
+    <!--</ul>-->
+    <!--{% endif %}-->
     <div>
         <div>
             {% block content %}
@@ -46,8 +49,5 @@
         </div>
     </div>
 </div>
-
-
 </body>
 </html>
-

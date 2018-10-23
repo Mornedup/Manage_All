@@ -37,8 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'auth_app',
-    'home_app',
+    'accounts_app',
     'finance_share_app',
 ]
 
@@ -83,7 +82,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL='auth_app.CUser'
+AUTH_USER_MODEL='accounts_app.CUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -129,3 +128,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #login redirect:
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts_app/login'

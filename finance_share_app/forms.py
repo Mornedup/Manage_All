@@ -18,7 +18,7 @@ class ClaimUploadForm(forms.ModelForm):
         model=Claim
         fields = (
         'description',
-        'ammount',
+        'amount',
         'notes',
         'docref',
         )

@@ -62,7 +62,8 @@ class CUser(AbstractBaseUser):
 
     def get_full_name(self):
         # Return full name
-        return self.username
+        full_name= self.first_name + ' ' + self.last_name
+        return full_name
 
     def get_short_name(self):
         # The user is identified by their email address
