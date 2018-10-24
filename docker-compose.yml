@@ -10,7 +10,7 @@ services:
     build: .
     command: "sh run_web.sh"
     ports:
-      - "8030:8001"
+      - "80:8001"
 #    environment:
 #      - DB_TYPE=postgresql
     networks:
