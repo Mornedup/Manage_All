@@ -19,7 +19,10 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from home_app.views import Home
+
 urlpatterns = [
+    path('', Home.as_view(), name='home'),
     path('batcave/', admin.site.urls),
     path('finance_share_app/', include('finance_share_app.urls')),
     path('accounts_app/', include('accounts_app.urls')),

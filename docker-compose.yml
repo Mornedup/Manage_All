@@ -12,7 +12,7 @@ services:
     ports:
       - "8030:8000"
 #    environment:
-#      - DB_TYPE=postgresql_
+#      - DB_TYPE=postgresql
     networks:
       - default
     links:
