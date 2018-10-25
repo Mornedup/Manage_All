@@ -74,13 +74,13 @@ def upload_new_claim(request):
 def add_claim(request, document_pk):
     document = get_object_or_404(Document, pk=document_pk)
     claims = Claim.objects.filter(docref=document)
-    context={'description': '',
-                   'amount': '',
-                   'notes':''}
+    context = {'description': '',
+               'amount': '',
+               'notes': ''}
     if request.method == 'POST':
         context = {'description': request.POST['description'],
-                   'amount':request.POST['amount'],
-                   'notes':request.POST['notes']}
+                   'amount': request.POST['amount'],
+                   'notes': request.POST['notes']}
 
         currentclaim = Claim(docref=Document.objects.get(pk=document_pk), description=request.POST['description'],
                              amount=request.POST['amount'], notes=request.POST['notes'])
@@ -89,15 +89,17 @@ def add_claim(request, document_pk):
         for user in CUser.objects.filter(pk__in=request.POST.getlist('checkbox')):
             UserClaimAllocate.objects.create(user=user, claim=currentclaim)
         count = UserClaimAllocate.objects.filter(claim=currentclaim).count()
-        UserClaimAllocate.objects.filter(claim=currentclaim).update(share_amount=int(currentclaim.amount) /count)
+        UserClaimAllocate.objects.filter(claim=currentclaim).update(share_amount=int(currentclaim.amount) / count)
         if 'save' in request.POST:
             return redirect('view_claim', document_pk=document.pk)
         elif 'saveadd' in request.POST:
             return render(request, 'finance_share_app/edit_add_claim.html',
-                          {'document': document, 'claims': claims, 'users': CUser.objects.all(), 'document_pk':document_pk, 'page':'Add'})
+                          {'document': document, 'claims': claims, 'users': CUser.objects.all(),
+                           'document_pk': document_pk, 'page': 'Add'})
 
     return render(request, 'finance_share_app/edit_add_claim.html',
-                  {'document': document, 'claims': claims, 'users': CUser.objects.all(), 'context': context, 'page':'Add'})
+                  {'document': document, 'claims': claims, 'users': CUser.objects.all(), 'context': context,
+                   'page': 'Add'})
 
 
 @login_required
@@ -106,18 +108,18 @@ def edit_claim(request, claim_pk, document_pk):
     claims = Claim.objects.filter(docref=document).exclude(pk=claim_pk)
     edit_claim = Claim.objects.get(pk=claim_pk)
     shares = UserClaimAllocate.objects.filter(claim=edit_claim)
-    shareusers=[]
+    shareusers = []
     for share in UserClaimAllocate.objects.filter(claim=edit_claim):
         shareusers.append(share.user)
 
-    context = {'description': edit_claim.description,
-               'amount': edit_claim.amount,
-               'notes': edit_claim.notes,
-               'shareusers': shareusers,
-               }
+    context = {
+        'description': edit_claim.description,
+        'amount': edit_claim.amount,
+        'notes': edit_claim.notes,
+        'shareusers': shareusers,
+    }
 
     if request.method == 'POST':
-
 
         context = {'description': request.POST['description'],
                    'amount': request.POST['amount'],
@@ -133,11 +135,13 @@ def edit_claim(request, claim_pk, document_pk):
         elif 'saveadd' in request.POST:
             claims = Claim.objects.filter(docref=document)
             return redirect('edit_add_claim', document=document, claims=claims, users=CUser.objects.all(), page='Add')
-    return render(request, 'finance_share_app/edit_add_claim.html', {'document': document, 'claims': claims, 'shares': shares, 'users': CUser.objects.all(), 'page':'Edit', 'context': context})
+    return render(request, 'finance_share_app/edit_add_claim.html',
+                  {'document': document, 'claims': claims, 'shares': shares, 'users': CUser.objects.all(),
+                   'page': 'Edit', 'context': context})
 
 
 @login_required
 def info_claim(request, claim_pk):
-    claim=Claim.objects.get(pk=claim_pk)
-    users=UserClaimAllocate.objects.filter(claim=claim)
-    return render(request, 'finance_share_app/info_claim.html', {'claim':claim, 'users':users})
+    claim = Claim.objects.get(pk=claim_pk)
+    users = UserClaimAllocate.objects.filter(claim=claim)
+    return render(request, 'finance_share_app/info_claim.html', {'claim': claim, 'users': users})
