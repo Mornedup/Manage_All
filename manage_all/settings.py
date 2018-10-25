@@ -35,8 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    
+
     'accounts_app',
     'finance_share_app',
     'home_app',
@@ -80,11 +79,11 @@ if DB_TYPE == 'postgresql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'my_db',
-        'USER': 'managealluser',
-        'PASSWORD': 'C5tGTaP56FG9h9qk',
-        'HOST': 'db', # set in docker-compose.yml
-        'PORT': 5432 # default postgres port
+            'NAME': 'manage_all_db',
+            'USER': 'managealluser',
+            'PASSWORD': 'C5tGTaP56FG9h9qk',
+            'HOST': 'db',  # set in docker-compose.yml
+            'PORT': 5432  # default postgres port
         }
     }
 else:
