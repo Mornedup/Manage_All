@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-echo yes | python manage.py collectstatic
+yes | python manage.py collectstatic
 
 sleep 5
 
