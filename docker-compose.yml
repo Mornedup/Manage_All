@@ -22,7 +22,3 @@ services:
       - db
     volumes:
       - .:/code
-
-volumes:
-  /mnt/db-volume1:
-
