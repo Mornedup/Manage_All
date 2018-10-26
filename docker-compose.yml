@@ -3,9 +3,11 @@ services:
   db:
     image: postgres
     volumes:
-      - postgres_data:/mnt/db-volume1/lib/postgresql/data/manage_all_db/
+      - /mnt/db-volume1:/var/lib/postgresql/data
     ports:
-       - "5432:5432"
+      - "5432:5432"
+    networks:
+      - internal
   web:
     build: .
     command: "sh run_web.sh"
@@ -14,6 +16,7 @@ services:
     environment:
       - DB_TYPE=postgresql
     networks:
+      - internal
       - default
     links:
       - db
@@ -21,5 +24,5 @@ services:
       - .:/code
 
 volumes:
-  postgres_data:
+  /mnt/db-volume1:
 
