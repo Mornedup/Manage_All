@@ -3,9 +3,6 @@
 
 yes | python manage.py collectstatic
 
-sleep 5
-
-yes | python manage.py migrate
 
 sleep 5
 

@@ -19,7 +19,7 @@ def login_view(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('homepage')
+    return redirect('home_app_home')
 
 def register(request):
     if request.method == "POST":
@@ -27,7 +27,7 @@ def register(request):
         print(form.errors)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('home_app_home')
     else:
         form = RegistrationForm()
     return render(request, 'accounts_app/register.html', {'form': form})

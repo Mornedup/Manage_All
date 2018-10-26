@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     volumes:
-      - /mnt/db-volume1:/var/lib/postgresql/data
+      - /mnt/db_volume1/postgresdata/:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   web:
