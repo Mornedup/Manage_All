@@ -79,8 +79,8 @@ if DB_TYPE == 'postgresql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'manage_all_db',
-            'USER': 'managealluser',
+            'NAME': 'manage_all_data',
+            'USER': 'manage_all_user',
             'PASSWORD': 'C5tGTaP56FG9h9qk',
             'HOST': 'db',  # set in docker-compose.yml
             'PORT': 5432  # default postgres port
