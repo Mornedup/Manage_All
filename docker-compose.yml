@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - mid_net
+      - back_net
   web:
     restart: always
     build: .
@@ -25,6 +25,8 @@ services:
       - .:/code
     networks:
       - mid_net
+      - back_net
 
-  networks:
-    mid_net:
+networks:
+  mid_net:
+  back_net:
