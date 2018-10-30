@@ -1,12 +1,16 @@
 version: '2'
 services:
   db:
+    restart: always
     image: postgres
     volumes:
       - /mnt/db_volume1/postgresdata/:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - back_net
   web:
+    restart: always
     build: .
     command: "sh run_web.sh"
     ports:
@@ -19,3 +23,10 @@ services:
       - db
     volumes:
       - .:/code
+    networks:
+      - mid_net
+      - back_net
+
+  networks:
+    mid_net:
+    back_net:

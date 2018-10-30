@@ -26,7 +26,7 @@ def report_select(request):
         owedbyuser = calculate_owed_by_user(request.user, daterange)
         final = calculate_final_out(owedbyuser, owedtouser)
         type = 'Custom report'
-        reportdata = compile_report(request.user, owedbyuser, owedtouser, final)
+        reportdata = compile_report(owedbyuser, owedtouser, final)
         return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
     return render(request, 'finance_share_app/report_select.html', {})
@@ -38,7 +38,8 @@ def last_month_report(request):
     owedbyuser = calculate_owed_by_user(request.user, get_default_date_range(-1))
     final = calculate_final_out(owedbyuser, owedtouser)
     type = 'Last Complete Month Report'
-    reportdata = compile_report(request.user, owedbyuser, owedtouser, final)
+    reportdata = compile_report(owedbyuser, owedtouser, final)
+    print(get_default_date_range())
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
 
@@ -48,7 +49,7 @@ def current_month_report(request):
     owedbyuser = calculate_owed_by_user(request.user, get_default_date_range(0))
     final = calculate_final_out(owedbyuser, owedtouser)
     type = 'Current month provisional report'
-    reportdata = compile_report(request.user, owedbyuser, owedtouser, final)
+    reportdata = compile_report(owedbyuser, owedtouser, final)
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
 
@@ -86,10 +87,9 @@ def add_claim(request, document_pk):
                              amount=request.POST['amount'], notes=request.POST['notes'])
         currentclaim.save()
 
-        for user in CUser.objects.filter(pk__in=request.POST.getlist('checkbox')):
-            UserClaimAllocate.objects.create(user=user, claim=currentclaim)
-        count = UserClaimAllocate.objects.filter(claim=currentclaim).count()
-        UserClaimAllocate.objects.filter(claim=currentclaim).update(share_amount=int(currentclaim.amount) / count)
+        share_list = CUser.objects.filter(pk__in=request.POST.getlist('checkbox'))
+        add_edit_claim_share(currentclaim, share_list)
+
         if 'save' in request.POST:
             return redirect('view_claim', document_pk=document.pk)
         elif 'saveadd' in request.POST:
@@ -129,6 +129,9 @@ def edit_claim(request, claim_pk, document_pk):
         edit_claim.amount = request.POST['amount']
         edit_claim.notes = request.POST['notes']
         edit_claim.save()
+
+        share_list = CUser.objects.filter(pk__in=request.POST.getlist('checkbox'))
+        add_edit_claim_share(edit_claim, share_list)
 
         if 'save' in request.POST:
             return redirect('view_claim', document_pk=document.pk)
