@@ -24,7 +24,7 @@ SECRET_KEY = 'i2*51n%z!b&i8pzb$1zt)h%a1qfrj5=@e(73h(z!belb)k1l^&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0:8001', 'manageall.spaceman9105.co.za']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'manageall.spaceman9105.co.za']
 
 # Application definition
 
