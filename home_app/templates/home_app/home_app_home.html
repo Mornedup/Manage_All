@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    {% if user.is_authenticated %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Home app</h1>
+        </div>
+        {% block subcontent %}
+        <a href="{% url 'finance_share_home' %}">Finance Manage App</a>
+        {% endblock %}
+    </div>
+    {% else %}
+    <div>
+        <h3>Please log in or create an account</h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

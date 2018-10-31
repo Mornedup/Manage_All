@@ -2,10 +2,14 @@
 FROM python:3.6
 # File Author / Maintainer
 MAINTAINER Morne
-#add project files to the usr/src/app folder
-ADD . /source/Manage_All
-#set directoty where CMD will execute
-WORKDIR /source/Manage_All
-# Get pip to download and install requirements:
+RUN apt-get update && apt-get install -y build-essential
+
+ENV APP_HOME /code
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+ADD requirements.txt $APP_HOME
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
+
+ADD . $APP_HOME

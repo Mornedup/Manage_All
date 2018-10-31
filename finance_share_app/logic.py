@@ -3,7 +3,6 @@ import datetime
 
 
 def get_default_date_range(offset=0):
-    print('Call get_default_date_range', offset)
     # offset will be the amount of months back you want to move your range
     startdate = datetime.datetime.now()
     startdate = startdate.replace(month=startdate.month + offset)
@@ -36,7 +35,6 @@ def calculate_owed_to_user(user, daterange):
                         totals[share.user] += share.share_amount
                     else:
                         totals[share.user] = share.share_amount
-    print(totals)
     return (totals)
 
 
@@ -70,5 +68,17 @@ def calculate_final_out(owedbyuser, owedtouser):
     return (finalout)
 
 
-def compile_report(user, owedbyuser, owedtouser, finalout):
+def compile_report(owedbyuser, owedtouser, finalout):
     return ({'owedbyuser': owedbyuser, 'owedtouser': owedtouser, 'finalout': finalout})
+
+
+def add_edit_claim_share(claim, shares):
+    #clear current shares for the current claim
+    UserClaimAllocate.objects.filter(claim=claim).delete()
+
+
+    #write new sahre entries
+    for user in shares:
+        UserClaimAllocate.objects.create(user=user, claim=claim)
+    count = UserClaimAllocate.objects.filter(claim=claim).count()
+    UserClaimAllocate.objects.filter(claim=claim).update(share_amount=int(claim.amount) / count)

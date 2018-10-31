@@ -1,20 +1,30 @@
-version: '3.6'
-SERVICES:  
-	db:    
-		IMAGE: POSTGRES:10.1-ALPINE    
-		VOLUMES:      
-			- POSTGRES_DATA:/mnt/db-volume1/LIB/POSTGRESQL/DATA/MANAGE_ALL/  
-		ports:
-			- "5432:5432"
-	WEB:    
-		BUILD: .    
-		COMMAND: PYTHON gunicorn rmatemanage.wsgi:application --bind 0.0.0.0:8000 --workers 3
-		volumes:      
-			- .:/source/Manage_All    
-		ports:      
-			- 8000:80       
-		depends_on:      
-			- db
+version: '2'
+services:
+  db:
+    restart: always
+    image: postgres
+    volumes:
+      - /mnt/db_volume1/postgresdata/:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - int_net
+  web:
+    restart: always
+    build: .
+    command: "sh run_web.sh"
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_TYPE=postgresql
+    networks:
+      - default
+    links:
+      - db
+    volumes:
+      - .:/code
+    networks:
+      - int_net
 
-	volumes:  
-		postgres_data:
+networks:
+  int_net:
