@@ -17,14 +17,13 @@ services:
       - "8001:8001"
     environment:
       - DB_TYPE=postgresql
-    networks:
-      - default
     links:
       - db
     volumes:
       - .:/code
     networks:
       - int_net
+      - default
 
 networks:
   int_net:
