@@ -7,8 +7,6 @@ services:
       - /mnt/db_volume1/postgresdata/:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    networks:
-      - int_net
   web:
     restart: always
     build: .
@@ -21,9 +19,3 @@ services:
       - db
     volumes:
       - .:/code
-    networks:
-      - int_net
-      - default
-
-networks:
-  int_net:
