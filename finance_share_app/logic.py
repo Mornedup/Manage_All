@@ -3,21 +3,24 @@ import datetime
 
 
 def get_default_date_range(offset=0):
+    # produces the month daterange that you are in
     # offset will be the amount of months back you want to move your range
-    startdate = datetime.datetime.now()
-    startdate = startdate.replace(month=startdate.month + offset)
-    if startdate.month == 1:
-        startdate.replace(year=startdate.year - 1, month=12, day=26)
-    else:
-        startdate = startdate.replace(month=startdate.month - 1, day=26)
 
+    today = datetime.datetime.now()
 
-    enddate = datetime.datetime.now()
-    enddate = enddate.replace(month=startdate.month + offset)
-    if enddate.month == 1:
-        enddate = enddate.replace(year=enddate.year - 1, month=12, day=25)
+    if today.day >= 25:
+        if today.month == 12:
+            enddate = today.replace(month=1, year=today.year+1, day=25)
+        else:
+            enddate = today.replace(month=today.month+1, day=25)
+        startdate = today.replace(day=26)
     else:
-        enddate = enddate.replace(day=25)
+        enddate = today.replace(day=25)
+        if today.month == 1:
+            startdate = today.replace(month=12, year=today.year-1, day=26)
+        else:
+            startdate = today.replace(month=today.month-1, day=26)
+
     daterange = {'start_date': startdate.date(), 'end_date': enddate.date()}
     return (daterange)
 

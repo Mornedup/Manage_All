@@ -2,14 +2,17 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.exceptions import ValidationError
 
-def profile_img_path(instance):
+
+def profile_img_path(instance, user):
     return 'user_{0}/profile_image/{1}'.format(instance.username, instance.profile_image.name)
 
+
 def phone_validate(arg):
-    if not len(arg)==10:
+    if not len(arg) == 10:
         raise ValidationError('Please input a valid 10 digit telephone number')
     if not arg.startswith('0'):
         raise ValidationError('Please input a valid telephone number')
+
 
 class CUserManager(BaseUserManager):
     def create_user(self, username, email, password=None):

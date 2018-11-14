@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from accounts_app.forms import RegistrationForm, UserEditForm, ProfileImgForm
-from .models import CUser
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth import update_session_auth_hash, login, logout
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
+
 def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -16,10 +17,12 @@ def login_view(request):
         form = AuthenticationForm(request)
     return render(request, 'accounts_app/login.html', {'form': form})
 
+
 @login_required
 def logout_view(request):
     logout(request)
     return redirect('home_app_home')
+
 
 def register(request):
     if request.method == "POST":
@@ -32,6 +35,7 @@ def register(request):
         form = RegistrationForm()
     return render(request, 'accounts_app/register.html', {'form': form})
 
+
 @login_required
 def view_profile(request):
     if request.method == 'POST':
@@ -43,6 +47,7 @@ def view_profile(request):
     PrflImgForm = ProfileImgForm(instance=request.user)
     args = {'user': request.user, 'PrflImgForm': PrflImgForm}
     return render(request, 'accounts_app/profile.html', args)
+
 
 @login_required
 def edit_profile(request):
@@ -57,6 +62,7 @@ def edit_profile(request):
         args = {'Userform': Userform}
 
     return render(request, 'accounts_app/edit_profile.html', args)
+
 
 @login_required
 def change_password(request):

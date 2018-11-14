@@ -50,6 +50,7 @@ def current_month_report(request):
     final = calculate_final_out(owedbyuser, owedtouser)
     type = 'Current month provisional report'
     reportdata = compile_report(owedbyuser, owedtouser, final)
+    print(get_default_date_range(0))
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
 
@@ -60,6 +61,11 @@ def finance_share_home(request):
 @login_required
 def upload_new_claim(request):
     if request.method == 'POST':
+        dateoffset = datetime.datetime.now() - datetime.datetime.strptime(request.POST['purchasedate'], '%Y-%m-%d')
+        print(dateoffset)
+        if dateoffset.days > 45:
+            return render(request, 'finance_share_app/upload_new_claim.html', {'requestdata': request.POST})
+
         currentdoc = Document(docref=request.POST['docref'], file=request.FILES['file'], owner=request.user,
                               notes=request.POST['notes'], created_date=timezone.now(),
                               purchasedate=request.POST['purchasedate'])

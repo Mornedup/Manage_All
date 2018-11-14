@@ -1,8 +1,6 @@
 #!/bin/bash
 
-
 yes | python manage.py collectstatic
-
 
 sleep 5
 

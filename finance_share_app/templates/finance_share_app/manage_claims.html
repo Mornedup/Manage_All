@@ -4,20 +4,43 @@
 <div>
     <a href="{% url 'upload_new_claim' %}" class="btn btn-default" role="button">Submit new claim</a>
     <p>Please have your Docs ref ready or uplaod a new doc first</p>
-
-    <form>
-        Document Reference search:
-        <input type="search" name="document_reference">
-        <input type="submit">
-    </form>
 </div>
 <div>
     <h2>Doc list</h2>
-    {% for item in docs %}
-    <div>
-        <p>Docref:{{ item.docref }}</p>
-        <a href="{% url 'view_claim' document_pk=item.pk %}" class="btn btn-info" role="button">More info</a><br>
+    <div class="container">
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Docref</th>
+                <th>Purchase date</th>
+                <th>More Info</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            {% for item in docs %}
+            <tr>
+                <td>{{ item.docref }}</td>
+                <td>{{ item.purchasedate.date}}</td>
+                <td><a href="{% url 'view_claim' document_pk=item.pk %}" class="btn btn-info" role="button">Info</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-    {% endfor %}
+
+    <script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+    </script>
 </div>
 {% endblock %}
