@@ -1,10 +1,7 @@
 {% extends 'finance_share_app/finance_share_home.html' %}
 
 {% block subcontent %}
-<div>
-    <a href="{% url 'upload_new_claim' %}" class="btn btn-default" role="button">Submit new claim</a>
-    <p>Please have your Docs ref ready or uplaod a new doc first</p>
-</div>
+
 <div>
     <h2>Doc list</h2>
     <div class="container">
@@ -15,16 +12,17 @@
             <tr>
                 <th>Docref</th>
                 <th>Purchase date</th>
+                <th>Claims</th>
                 <th>More Info</th>
             </tr>
             </thead>
             <tbody id="myTable">
-            {% for item in docs %}
+            {% for doc in docs %}
             <tr>
-                <td>{{ item.docref }}</td>
-                <td>{{ item.purchasedate.date}}</td>
-                <td><a href="{% url 'view_claim' document_pk=item.pk %}" class="btn btn-info" role="button">Info</a>
-                </td>
+                <td>{{ doc.docref }}</td>
+                <td>{{ doc.purchasedate.date }}</td>
+                <td>{{ doc.claims }}</td>
+                <td><a href="{% url 'view_claim' document_pk=1 %}" class="btn btn-info" role="button">Info</a></td>
             </tr>
             {% endfor %}
             </tbody>

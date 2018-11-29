@@ -3,54 +3,70 @@ from django.contrib.auth.decorators import login_required
 from finance_share_app.logic import *
 from finance_share_app.models import *
 
-
 # Create your views here.
+util = ClaimUtils()
+reportutil = ReportUtils()
+
 @login_required
 def manage_claims_view(request):
-    return render(request, 'finance_share_app/manage_claims.html',
-                  {'docs': Document.objects.filter(owner=request.user)})
+    documents = util.get_documents(request.user)
+    docs = []
+    for document in documents:
+        current = {'pk': document.pk, 'claims': util.claims_to_text(Claim.objects.filter(docref=document)), 'docref': document.docref,
+                   'purchasedate': document.purchasedate}
+        docs.append(current)
+    context = {
+        'docs': docs
+    }
+    return render(request, 'finance_share_app/manage_claims.html', context)
 
 
 @login_required
 def view_claim(request, document_pk):
-    document = get_object_or_404(Document, pk=document_pk)
-    claims = Claim.objects.filter(docref=document)
-    return render(request, 'finance_share_app/view_claim.html', {'document': document, 'claims': claims})
+    document = util.get_document(document_pk)
+    context = {
+        'document': document,
+        'claims': util.get_claims(document)
+    }
+    return render(request, 'finance_share_app/view_claim.html', context)
 
 
 @login_required
 def report_select(request):
     if request.method == 'POST':
-        daterange = {'start_date': request.POST['start_date'], 'end_date': request.POST['end_date']}
-        owedtouser = calculate_owed_to_user(request.user, daterange)
-        owedbyuser = calculate_owed_by_user(request.user, daterange)
-        final = calculate_final_out(owedbyuser, owedtouser)
-        type = 'Custom report'
-        reportdata = compile_report(owedbyuser, owedtouser, final)
-        return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
-
+        enddate=datetime.datetime.strptime(request.POST['end_date'], '%Y-%m-%d')
+        daterange = {'start_date': request.POST['start_date'], 'end_date': enddate.replace(day=enddate.day+1)}
+        context = {
+            'type': 'Custom report',
+            'reportdata': reportutil.generate_report_data(request.user, daterange),
+        }
+        return render(request, 'finance_share_app/report.html', context)
     return render(request, 'finance_share_app/report_select.html', {})
 
 
 @login_required
 def last_month_report(request):
-    owedtouser = calculate_owed_to_user(request.user, get_default_date_range(-1))
-    owedbyuser = calculate_owed_by_user(request.user, get_default_date_range(-1))
-    final = calculate_final_out(owedbyuser, owedtouser)
+    owedtouser = reportutil.calculate_owed_to_user(request.user, get_default_date_range(months=-1))
+    owedbyuser = reportutil.calculate_owed_by_user(request.user, get_default_date_range(months=-1))
+    final = reportutil.calculate_final_out(owedbyuser, owedtouser)
+    reportdata = reportutil.compile_report(owedbyuser, owedtouser, final)
     type = 'Last Complete Month Report'
-    reportdata = compile_report(owedbyuser, owedtouser, final)
-    print(get_default_date_range())
+    # reportdata = reportutil.generate_report_data(request.user, get_default_date_range(-1))
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
 
 @login_required
 def current_month_report(request):
-    owedtouser = calculate_owed_to_user(request.user, get_default_date_range(0))
-    owedbyuser = calculate_owed_by_user(request.user, get_default_date_range(0))
-    final = calculate_final_out(owedbyuser, owedtouser)
+    # owedtouser = calculate_owed_to_user(request.user, get_default_date_range(0))
+    # owedbyuser = calculate_owed_by_user(request.user, get_default_date_range(0))
+    # final = calculate_final_out(owedbyuser, owedtouser)
+    # reportdata = compile_report(owedbyuser, owedtouser, final)
+
+    owedtouser = reportutil.calculate_owed_to_user(request.user, get_default_date_range())
+    owedbyuser = reportutil.calculate_owed_by_user(request.user, get_default_date_range())
+    final = reportutil.calculate_final_out(owedbyuser, owedtouser)
+    reportdata = reportutil.compile_report(owedbyuser, owedtouser, final)
     type = 'Current month provisional report'
-    reportdata = compile_report(owedbyuser, owedtouser, final)
-    print(get_default_date_range(0))
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
 
@@ -62,7 +78,6 @@ def finance_share_home(request):
 def upload_new_claim(request):
     if request.method == 'POST':
         dateoffset = datetime.datetime.now() - datetime.datetime.strptime(request.POST['purchasedate'], '%Y-%m-%d')
-        print(dateoffset)
         if dateoffset.days > 45:
             return render(request, 'finance_share_app/upload_new_claim.html', {'requestdata': request.POST})
 
@@ -81,13 +96,17 @@ def upload_new_claim(request):
 def add_claim(request, document_pk):
     document = get_object_or_404(Document, pk=document_pk)
     claims = Claim.objects.filter(docref=document)
-    context = {'description': '',
-               'amount': '',
-               'notes': ''}
+    subcontext = {
+        'description': '',
+        'amount': '',
+        'notes': ''
+    }
     if request.method == 'POST':
-        context = {'description': request.POST['description'],
-                   'amount': request.POST['amount'],
-                   'notes': request.POST['notes']}
+        subcontext = {
+            'description': request.POST['description'],
+            'amount': request.POST['amount'],
+            'notes': request.POST['notes']
+        }
 
         currentclaim = Claim(docref=Document.objects.get(pk=document_pk), description=request.POST['description'],
                              amount=request.POST['amount'], notes=request.POST['notes'])
@@ -102,10 +121,14 @@ def add_claim(request, document_pk):
             return render(request, 'finance_share_app/edit_add_claim.html',
                           {'document': document, 'claims': claims, 'users': CUser.objects.all(),
                            'document_pk': document_pk, 'page': 'Add'})
-
-    return render(request, 'finance_share_app/edit_add_claim.html',
-                  {'document': document, 'claims': claims, 'users': CUser.objects.all(), 'context': context,
-                   'page': 'Add'})
+    context = {
+        'document': document,
+        'claims': claims,
+        'users': CUser.objects.all(),
+        'context': subcontext,
+        'page': 'Add'
+    }
+    return render(request, 'finance_share_app/edit_add_claim.html', context)
 
 
 @login_required
@@ -126,7 +149,6 @@ def edit_claim(request, claim_pk, document_pk):
     }
 
     if request.method == 'POST':
-
         context = {'description': request.POST['description'],
                    'amount': request.POST['amount'],
                    'notes': request.POST['notes']}
@@ -144,13 +166,21 @@ def edit_claim(request, claim_pk, document_pk):
         elif 'saveadd' in request.POST:
             claims = Claim.objects.filter(docref=document)
             return redirect('edit_add_claim', document=document, claims=claims, users=CUser.objects.all(), page='Add')
-    return render(request, 'finance_share_app/edit_add_claim.html',
-                  {'document': document, 'claims': claims, 'shares': shares, 'users': CUser.objects.all(),
-                   'page': 'Edit', 'context': context})
+    context = {
+        'document': document,
+        'claims': claims,
+        'shares': shares,
+        'users': CUser.objects.all(),
+        'page': 'Edit',
+        'context': context
+    }
+    return render(request, 'finance_share_app/edit_add_claim.html', context)
 
 
 @login_required
 def info_claim(request, claim_pk):
-    claim = Claim.objects.get(pk=claim_pk)
-    users = UserClaimAllocate.objects.filter(claim=claim)
-    return render(request, 'finance_share_app/info_claim.html', {'claim': claim, 'users': users})
+    context ={
+        'claim': util.get_claim(claim_pk),
+        "users_shares": util.get_shares(claim_pk)
+    }
+    return render(request, 'finance_share_app/info_claim.html', context)

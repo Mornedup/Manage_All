@@ -10,7 +10,7 @@
         {% for claim in claims %}
         <p>{{ claim.description }}</p>
         <p>{{ claim.amount }}</p>
-        <a href="{% url 'view_claim' document_pk=document.pk %}" class="btn btn-info" role="button">More Info</a>
+        <a href="{% url 'info_claim' claim_pk=claim.pk %}" class="btn btn-info" role="button">More Info</a>
         <a href="{% url 'edit_claim' document_pk=document.pk claim_pk=claim.pk %}" class="btn btn-default" role="button">Edit</a><br>
         {% endfor %}
     </div>

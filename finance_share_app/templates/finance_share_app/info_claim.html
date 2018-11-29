@@ -8,16 +8,15 @@
     <p>Claim amount: {{ claim.amount }}</p>
     <p>Claim notes: {{ claim.notes }}</p>
     <p>Docref: {{ claim.docref }}</p>
-    <a href="{{ claim.docref.file.url }}">View Document</a><br><br>
+    <a href="{{ claim.docref.file.url }}" target="_blank">View Document</a><br><br>
     <div>
         <h4>Users:</h4>
-        {% for claim in users %}
-        <p>{{ claim.user.get_full_name }}</p>
-        <p>R{{ claim.share }}</p>
+        {% for key, value in users_shares.items %}
+        <p>{{ value.name }}</p>
+        <p>R{{ value.share }}</p>
         {% endfor %}
     </div>
-    <p>{{ users }}</p>
-    <a href="" class="btn btn-default" role="button">Edit Claim</a><br>
+    <a href="{% url 'edit_claim' document_pk=claim.docref.pk claim_pk=claim.pk %}" class="btn btn-default" role="button">Edit Claim</a><br>
 </div>
 
 {% endblock %}

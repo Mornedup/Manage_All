@@ -7,28 +7,46 @@
         <div class="jumbotron">
             <h1>Finance share app</h1>
         </div>
-        {% block subcontent %}
         <div>
-            <a href="{% url 'upload_new_claim' %}" class="btn btn-default" role="button">Start new claim</a>
+            <ul class="nav nav-tabs">
+                <li><a href="{% url 'upload_new_claim' %}" class="btn btn-default" role="button">Start new claim</a>
+                </li>
+                <li><a href="{% url 'manage_claims' %}" class="btn btn-default" role="button">Manage Claims</a></li>
+                <li><a href="{% url 'report_select' %}" class="btn btn-default" role="button">Reports</a></li>
+            </ul>
+        </div>
+        {% block subcontent %}
+        <br>
+        <p>Welcome to finance share app. Here you can upload document as proof of purchase and make claims on on those
+            uploads. The upload is not verified but merely serves as a reference if it needs to be checked.</p>
+
+        <div>
+            <h3>Start new claim</h3>
             <div>
                 <p>Upload a new document for claiming</p>
             </div>
         </div>
         <div>
-            <a href="{% url 'manage_claims' %}" class="btn btn-default" role="button">Manage Claims</a>
+            <h3>Manage Claims</h3>
             <div>
                 <p>View uploaded claims and manage them</p>
             </div>
         </div>
         <div>
-            <a href="{% url 'report_select' %}" class="btn btn-default" role="button">Reports</a>
+            <h3>Reports</h3>
             <div>
                 <p>Get reports on claims</p>
             </div>
         </div>
         {% endblock %}
+        <br>
+        <div class="well well-sm">
+            <p>Please note that his app is still in the making but it is functional. Feedback will be appreciated. Important
+            issues and bugs can be logged on the git page that is linked on the top of the page</p></p>
+        </div>
+
+        {% else %}
     </div>
-    {% else %}
     <div>
         <h3>Please log in or create an account</h3>
     </div>

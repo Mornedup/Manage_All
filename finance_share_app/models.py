@@ -21,6 +21,10 @@ class Document(models.Model):
     def __str__(self):
         return '{}'.format(self.pk)
 
+    @property
+    def convert_to_date(self):
+        return self.created_date.date()
+
 
 class Claim(models.Model):
     description = models.CharField(max_length=200)
