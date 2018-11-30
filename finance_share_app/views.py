@@ -4,15 +4,18 @@ from finance_share_app.logic import *
 from finance_share_app.models import *
 
 # Create your views here.
-util = ClaimUtils()
+claimutil = ClaimDocUtils()
 reportutil = ReportUtils()
+dateutil = DateUtils()
+
 
 @login_required
 def manage_claims_view(request):
-    documents = util.get_documents(request.user)
+    documents = claimutil.get_documents(request.user)
     docs = []
     for document in documents:
-        current = {'pk': document.pk, 'claims': util.claims_to_text(Claim.objects.filter(docref=document)), 'docref': document.docref,
+        current = {'pk': document.pk, 'claims': claimutil.claims_to_text(Claim.objects.filter(docref=document)),
+                   'docref': document.docref,
                    'purchasedate': document.purchasedate}
         docs.append(current)
     context = {
@@ -23,10 +26,10 @@ def manage_claims_view(request):
 
 @login_required
 def view_claim(request, document_pk):
-    document = util.get_document(document_pk)
+    document = claimutil.get_document(document_pk)
     context = {
         'document': document,
-        'claims': util.get_claims(document)
+        'claims': claimutil.get_claims(document)
     }
     return render(request, 'finance_share_app/view_claim.html', context)
 
@@ -34,8 +37,8 @@ def view_claim(request, document_pk):
 @login_required
 def report_select(request):
     if request.method == 'POST':
-        enddate=datetime.datetime.strptime(request.POST['end_date'], '%Y-%m-%d')
-        daterange = {'start_date': request.POST['start_date'], 'end_date': enddate.replace(day=enddate.day+1)}
+        enddate = datetime.datetime.strptime(request.POST['end_date'], '%Y-%m-%d')
+        daterange = {'start_date': request.POST['start_date'], 'end_date': enddate.replace(day=enddate.day + 1)}
         context = {
             'type': 'Custom report',
             'reportdata': reportutil.generate_report_data(request.user, daterange),
@@ -46,26 +49,14 @@ def report_select(request):
 
 @login_required
 def last_month_report(request):
-    owedtouser = reportutil.calculate_owed_to_user(request.user, get_default_date_range(months=-1))
-    owedbyuser = reportutil.calculate_owed_by_user(request.user, get_default_date_range(months=-1))
-    final = reportutil.calculate_final_out(owedbyuser, owedtouser)
-    reportdata = reportutil.compile_report(owedbyuser, owedtouser, final)
     type = 'Last Complete Month Report'
-    # reportdata = reportutil.generate_report_data(request.user, get_default_date_range(-1))
+    reportdata = reportutil.generate_report_data(request.user, dateutil.get_default_date_range(-1))
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
 
 @login_required
 def current_month_report(request):
-    # owedtouser = calculate_owed_to_user(request.user, get_default_date_range(0))
-    # owedbyuser = calculate_owed_by_user(request.user, get_default_date_range(0))
-    # final = calculate_final_out(owedbyuser, owedtouser)
-    # reportdata = compile_report(owedbyuser, owedtouser, final)
-
-    owedtouser = reportutil.calculate_owed_to_user(request.user, get_default_date_range())
-    owedbyuser = reportutil.calculate_owed_by_user(request.user, get_default_date_range())
-    final = reportutil.calculate_final_out(owedbyuser, owedtouser)
-    reportdata = reportutil.compile_report(owedbyuser, owedtouser, final)
+    reportdata = reportutil.generate_report_data(request.user, dateutil.get_default_date_range())
     type = 'Current month provisional report'
     return render(request, 'finance_share_app/report.html', {'type': type, 'reportdata': reportdata})
 
@@ -80,15 +71,13 @@ def upload_new_claim(request):
         dateoffset = datetime.datetime.now() - datetime.datetime.strptime(request.POST['purchasedate'], '%Y-%m-%d')
         if dateoffset.days > 45:
             return render(request, 'finance_share_app/upload_new_claim.html', {'requestdata': request.POST})
-
-        currentdoc = Document(docref=request.POST['docref'], file=request.FILES['file'], owner=request.user,
-                              notes=request.POST['notes'], created_date=timezone.now(),
-                              purchasedate=request.POST['purchasedate'])
-        currentdoc.save()
+        currentdoc = claimutil.add_document(docref=request.POST['docref'], file=request.FILES['file'],
+                                            owner=request.user, notes=request.POST['notes'],
+                                            purchasedate=request.POST['purchasedate'])
         if 'saveadd' in request.POST:
-            return redirect('add_claim', document_pk=currentdoc.pk)
+            return redirect('add_claim', document_pk=currentdoc)
         elif 'save' in request.POST:
-            return redirect('view_claim', document_pk=currentdoc.pk)
+            return redirect('view_claim', document_pk=currentdoc)
     return render(request, 'finance_share_app/upload_new_claim.html')
 
 
@@ -113,7 +102,7 @@ def add_claim(request, document_pk):
         currentclaim.save()
 
         share_list = CUser.objects.filter(pk__in=request.POST.getlist('checkbox'))
-        add_edit_claim_share(currentclaim, share_list)
+        claimutil.add_edit_claim_share(currentclaim, share_list)
 
         if 'save' in request.POST:
             return redirect('view_claim', document_pk=document.pk)
@@ -159,7 +148,7 @@ def edit_claim(request, claim_pk, document_pk):
         edit_claim.save()
 
         share_list = CUser.objects.filter(pk__in=request.POST.getlist('checkbox'))
-        add_edit_claim_share(edit_claim, share_list)
+        claimutil.add_edit_claim_share(edit_claim, share_list)
 
         if 'save' in request.POST:
             return redirect('view_claim', document_pk=document.pk)
@@ -179,8 +168,8 @@ def edit_claim(request, claim_pk, document_pk):
 
 @login_required
 def info_claim(request, claim_pk):
-    context ={
-        'claim': util.get_claim(claim_pk),
-        "users_shares": util.get_shares(claim_pk)
+    context = {
+        'claim': claimutil.get_claim(claim_pk),
+        "users_shares": claimutil.get_shares(claim_pk)
     }
     return render(request, 'finance_share_app/info_claim.html', context)

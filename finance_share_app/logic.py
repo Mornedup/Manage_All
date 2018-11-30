@@ -2,54 +2,7 @@ from finance_share_app.models import *
 import datetime
 
 
-def get_default_date_range(months=0, month_start=26, today=datetime.datetime.now().date()):
-    if today.day >= month_start:
-        start_date = today.replace(day=month_start)
-        if today.month == 12:
-            end_date = today.replace(month=1, year=today.year + 1, day=month_start)
-        else:
-            end_date = today.replace(month=today.month + 1, day=month_start)
-    else:
-        if today.month == 1:
-            start_date = today.replace(month=12, year=today.year - 1, day=month_start)
-        else:
-            start_date = today.replace(month=today.month - 1, day=month_start)
-        end_date = today.replace(day=month_start)
-    if ((start_date.month + months) % 12):
-        start_date = start_date.replace(month=(start_date.month + months) % 12,
-                                    year=start_date.year + int((start_date.month + months-1) / 12))
-    else:
-        start_date = start_date.replace(month=12,
-                                        year=start_date.year + int((start_date.month + months-1) / 12))
-    if ((end_date.month + months) % 12):
-        end_date = end_date.replace(month=(end_date.month + months) % 12,
-                                year=end_date.year + int((end_date.month + months-1) / 12))
-    else:
-        end_date = end_date.replace(month=12,
-                                    year=end_date.year + int((end_date.month + months-1) / 12))
-    return {'start_date': start_date, 'end_date': end_date}
-
-
-def add_edit_claim_share(claim, shares):
-    # clear current shares for the current claim
-    UserClaimAllocate.objects.filter(claim=claim).delete()
-    # write new share entries
-    for user in shares:
-        UserClaimAllocate.objects.create(user=user, claim=claim)
-    count = UserClaimAllocate.objects.filter(claim=claim).count()
-    UserClaimAllocate.objects.filter(claim=claim).update(share_amount=float(claim.amount) / count)
-
-
-# def claims_to_text(claims):
-#     # get list of claims as par and return a string with names for display
-#     claimstr = ''
-#     for claim in claims:
-#         claimstr = claimstr + str(claim.description) + ', '
-#     claimstr = claimstr[0:-2]
-#     return claimstr
-
-
-class ClaimUtils(object):
+class ClaimDocUtils(object):
     def __init__(self):
         pass
 
@@ -93,10 +46,57 @@ class ClaimUtils(object):
                                                 claim__docref__created_date__range=[daterange.get('start_date'),
                                                                                     daterange.get('end_date')])
 
+    def add_edit_claim_share(self, claim, shares):
+        # clear current shares for the current claim
+        UserClaimAllocate.objects.filter(claim=claim).delete()
+        # write new share entries
+        for user in shares:
+            UserClaimAllocate.objects.create(user=user, claim=claim)
+        count = UserClaimAllocate.objects.filter(claim=claim).count()
+        UserClaimAllocate.objects.filter(claim=claim).update(share_amount=float(claim.amount) / count)
+        return 'success'
 
-class ReportUtils(ClaimUtils):
+    def add_document(self, docref, file, owner, notes, purchasedate):
+        currentdoc = Document(docref=docref, file=file, owner=owner,
+                              notes=notes, created_date=timezone.now(),
+                              purchasedate=purchasedate)
+        currentdoc.save()
+        return currentdoc.pk
+
+
+class DateUtils(object):
     def __init__(self):
         pass
+
+    def get_default_date_range(self, months=0, month_start=26, today=datetime.datetime.now().date()):
+        if today.day >= month_start:
+            start_date = today.replace(day=month_start)
+            if today.month == 12:
+                end_date = today.replace(month=1, year=today.year + 1, day=month_start)
+            else:
+                end_date = today.replace(month=today.month + 1, day=month_start)
+        else:
+            if today.month == 1:
+                start_date = today.replace(month=12, year=today.year - 1, day=month_start)
+            else:
+                start_date = today.replace(month=today.month - 1, day=month_start)
+            end_date = today.replace(day=month_start)
+        if ((start_date.month + months) % 12):
+            start_date = start_date.replace(month=(start_date.month + months) % 12,
+                                            year=start_date.year + int((start_date.month + months - 1) / 12))
+        else:
+            start_date = start_date.replace(month=12,
+                                            year=start_date.year + int((start_date.month + months - 1) / 12))
+        if ((end_date.month + months) % 12):
+            end_date = end_date.replace(month=(end_date.month + months) % 12,
+                                        year=end_date.year + int((end_date.month + months - 1) / 12))
+        else:
+            end_date = end_date.replace(month=12,
+                                        year=end_date.year + int((end_date.month + months - 1) / 12))
+        return {'start_date': start_date, 'end_date': end_date}
+
+
+class ReportUtils(ClaimDocUtils, DateUtils):
 
     def calculate_owed_to_user(self, user, daterange):
         docs = self.get_documents(user, daterange)
