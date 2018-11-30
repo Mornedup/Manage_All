@@ -22,7 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'i2*51n%z!b&i8pzb$1zt)h%a1qfrj5=@e(73h(z!belb)k1l^&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if DB_TYPE == 'postgresql':
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'manageall.n3rdh3rd.co.za']
 
