@@ -17,13 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-import home_app
+import apps.home_app
 
 urlpatterns = [
     path('batcave/', admin.site.urls),
-    path('finance_share_app/', include('finance_share_app.urls')),
-    path('accounts_app/', include('accounts_app.urls')),
-    path('', include('home_app.urls')),
+    path('finance_share_app/', include('apps.finance_share_app.urls')),
+    path('accounts_app/', include('apps.accounts_app.urls')),
+    path('', include('apps.home_app.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
