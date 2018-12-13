@@ -1,0 +1,44 @@
+{% extends 'finance_share_app/finance_share_home.html' %}
+
+{% block subcontent %}
+
+<div>
+    <h2>Doc list</h2>
+    <div class="container">
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Docref</th>
+                <th>Purchase date</th>
+                <th>Claims</th>
+                <th>More Info</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            {% for doc in docs %}
+            <tr>
+                <td>{{ doc.docref }}</td>
+                <td>{{ doc.purchasedate.date }}</td>
+                <td>{{ doc.claims }}</td>
+                <td><a href="{% url 'view_claim' document_pk=doc.pk %}" class="btn btn-info" role="button">Info</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+    </script>
+</div>
+{% endblock %}

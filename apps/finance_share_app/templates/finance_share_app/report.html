@@ -1,0 +1,19 @@
+{% extends 'finance_share_app/finance_share_home.html' %}
+
+{% block subcontent %}
+    <h2>{{ type }}</h2>
+    <h3> Summary </h3>
+    <h4> Owed by you for month </h4>
+    {% for key, value in reportdata.owedbyuser.items %}
+        <p> {{ key }}: R{{ value }}  </p>
+        <a href="{% url 'overview' daterange=daterange owe_to=key %}">Details</a>
+    {% endfor %}
+    <h4> Owed to you for month </h4>
+    {% for key, value in reportdata.owedtouser.items %}
+        <p> {{ key }}: R{{ value }}  </p>
+    {% endfor %}
+    <h4> In conclusion </h4>
+    {% for key, value in reportdata.finalout.items %}
+        <p>{{ key }}: R{{ value }}</p>
+    {% endfor %}
+{% endblock %}

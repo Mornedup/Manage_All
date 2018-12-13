@@ -1,0 +1,22 @@
+{% extends 'finance_share_app/finance_share_home.html' %}
+
+{% block subcontent %}
+<div>
+    <h2>Owed to {{owe_to}}</h2>
+    {% for item in info %}
+    <h3>{{item.doc.docref}}</h3>
+    <p>{{item.doc.purchasedate}}</p>
+    <a href="{{ item.doc.file.url }}" target="_blank">View Document</a>
+    <br>
+    <h4>Claims</h4>
+    {% for claim in item.claims %}
+    <div class="container" style="background-color: #a3a3a3">
+    <p>{{claim.claim.description}}</p>
+    <p>{{claim.share_amount}}</p>
+    <a href="{% url 'info_claim' claim_pk=claim.claim.pk %}" class="btn btn-info" role="button">Info</a>
+    </div>
+    <br>
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
