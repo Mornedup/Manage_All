@@ -8,11 +8,13 @@ class DateUtils(object):
 
     def get_default_date_range(self, months=0, month_start=26, today=datetime.datetime.now().date()):
         # month offset done
+        print((today.month + months) % 12, months)
         if ((today.month + months) % 12):
             today = today.replace(month=(today.month + months) % 12,
                                   year=today.year + int((today.month + months - 1) / 12))
         else:
-            today = today.replace(month=12, year=today.year + int((today.month + months - 1) / 12))
+            today = today.replace(month=12, year=today.year - 1 + int((today.month + months - 1) / 12))
+
         # get start end end of month
         if today.day >= month_start:
             start_date = today.replace(day=month_start)

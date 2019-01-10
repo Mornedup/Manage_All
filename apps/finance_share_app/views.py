@@ -37,7 +37,8 @@ def view_claim(request, document_pk):
 @login_required
 def report_select(request):
     if request.method == 'POST':
-        if request.POST.owe_to:
+        print(request.POST)
+        if "owe_to" in  request.POST:
             return redirect('overview',
                             {'daterange': request.POST.daterange, 'owe_to': request.POST.owe_to, 'user': request.user})
         enddate = datetime.datetime.strptime(request.POST['end_date'], '%Y-%m-%d')
