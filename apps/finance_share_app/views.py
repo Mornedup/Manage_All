@@ -37,12 +37,11 @@ def view_claim(request, document_pk):
 @login_required
 def report_select(request):
     if request.method == 'POST':
-        print(request.POST)
-        if "owe_to" in  request.POST:
-            return redirect('overview',
-                            {'daterange': request.POST.daterange, 'owe_to': request.POST.owe_to, 'user': request.user})
+        # if "owe_to" in request.POST:
+        #     return redirect('overview', {'daterange': request.POST.daterange, 'owe_to': request.POST.owe_to, 'user': request.user})
         enddate = datetime.datetime.strptime(request.POST['end_date'], '%Y-%m-%d')
-        daterange = {'start_date': request.POST['start_date'], 'end_date': enddate.replace(day=enddate.day + 1)}
+        daterange = {'start_date': request.POST['start_date'], 'end_date': datetime.datetime.date(enddate.replace(day=enddate.day + 1))}
+        print (daterange)
         context = {
             'type': 'Custom report',
             'reportdata': reportutil.generate_report_data(request.user, daterange),
